@@ -2,6 +2,8 @@ luaunit = require('luaunit')
 
 
 BaseLogger = require('usagelogger.base_logger')
+UsageLoggers = require('usagelogger.usage_loggers')
+
 
 TestBaseLogger = {}
 
@@ -21,5 +23,16 @@ TestBaseLogger = {}
         status = b:submit("hello")
         luaunit.assertEquals(status, true)
     end
+
+
+    TestUsageLogger = {}
+        function TestUsageLogger:testEnableDisable()
+            UsageLoggers:disable()
+            luaunit.assertEquals(UsageLoggers.__disabled, true)
+            UsageLoggers:enable()
+            luaunit.assertEquals(UsageLoggers.__disabled, false)
+        end
+
+
 
     luaunit.run()

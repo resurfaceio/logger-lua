@@ -1,19 +1,20 @@
+-- © 2016-2021 Resurface Labs Inc.
 
-lunajson = require 'lunajson'
+local lunajson = require 'lunajson'
 
 BaseLogger = require('usagelogger.base_logger')
 HttpRules = require('usagelogger.http_rules')
 
 local HttpLogger = BaseLogger:new()
-    httplogger = HttpLogger:new{}
-    rules = HttpRules:new{}
+    local httplogger = HttpLogger:new{}
+    local rules = HttpRules:new{}
 
     function HttpLogger:applyRules()
     end
 
     function HttpLogger:submitIfPassing(details)
         details = rules.apply(details)
-        if details is nil then
+        if details == nil then
             return
         end
 

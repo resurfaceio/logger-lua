@@ -1,55 +1,107 @@
-http = require("socket.http")
-ltn12 = require("ltn12")
+-- © 2016-2021 Resurface Labs Inc.
+
+local ltn12 = require "ltn12"
+local http = require "socket.http"
+local url_parser = require ("socket.url").parse
+local dns = require("socket").dns
+
 -- VERSION
 local VERSION = "0.1.0"
 
--- Meta Class
-local BaseLogger = {agent, enabled, queue, url, skip_compression, skip_submission,version}
+-- Prototype metatable
+local BaseLogger = {}
 
-    -- Constructor
-    function BaseLogger:new(o, agent, enabled, queue, url, skip_compression, skip_submission, version)
-        o = o or {}
-        setmetatable(o, self)
-        self.__index = self
-        self.agent = agent
-        self.enabled = enabled or os.getenv("USAGE_LOGGERS_DISABLE") ~= true
-        self.queue = queue
-        self.url = url or os.getenv("USAGELOGGER_URL")
-        self.skip_compression = skip_compression or false
-        self.skip_submission = skip_submission or false
-        self.version = version or os.getenv("VERSION") or VERSION
-        return o
+-- Constructor
+function BaseLogger:new(o, agent, enabled, queue, url, skip_compression, skip_submission)
+    o = o or {}
+    setmetatable(o, self)
+    self.__index = self
+
+    o.agent = agent or o.agent
+    o.host = self:host_lookup()
+    o.skip_compression = skip_compression or o.skip_compression or false
+    o.skip_submission = skip_submission or o.skip_submission or false
+    o.version = self:version_lookup()
+
+    o.url = url or o.url or UsageLoggers:url_by_default()
+    o.enabled = enabled or o.enabled
+    o.queue = queue or o.queue
+    if o.queue ~= nil then
+        o.url = nil
+    elseif o.url ~= nil and type(o.url) == "string" then
+        local parsed_url = url_parser(o.url)
+        assert(parsed_url ~= nil, "invalid URL")
+        assert(parsed_url.scheme == "http" or parsed_url.scheme == "https", "incorrect URL scheme")
+    else
+        o.enabled = false
+        o.url = nil
     end
 
-    function BaseLogger:submit(msg)
-        if msg == nil or self.skip_submission == true or self.enabled == false then
-            
-        elseif self.queue ~= nil then
-            self.queue:push(msg)
-        else
-            local response_body = { }
-            local res, code, response_headers, status = http.request
+    o.enableable = o.queue ~= nil or o.url ~= nil
+    o.submit_failures = 0
+    o.submit_successes = 0
+
+    return o
+end
+
+-- Submits JSON message to intended destination.
+function BaseLogger:submit(msg)
+    if msg == nil or self.skip_submission == true or self.enabled == false then
+
+    elseif self.queue ~= nil then
+        table.insert(self.queue, msg)
+    else
+        local response_body = { }
+        local _, code = http.request
+            {
+                url = self.url,
+                method = "POST",
+                headers =
                 {
-                    url = self.url,
-                    method = "POST",
-                    headers =
-                    {
-                        ["Connection"] =  "keep-alive",
-                        ["User-Agent"]= "Resurface/ " .. self.version .. " " .. "(" .. self.agent .. ")",
-                        ["Content-Type"] = "application/json; charset=UTF-8",
-                    },
-                    source = ltn12.source.string(msg),
-                    sink = ltn12.sink.table(response_body)
-                }
-            if code == 204 then
-                return true
-            else
-                return false
-            end
-
+                    ["Connection"] =  "keep-alive",
+                    ["User-Agent"] = string.format("Resurface/%s (%s)", self.version, self.agent),
+                    ["Content-Type"] = "application/json; charset=UTF-8",
+                    ["Content-Length"] = string.len(msg)
+                },
+                source = ltn12.source.string(msg),
+                sink = ltn12.sink.table(response_body)
+            }
+        if code == 204 then
+            return true
+        else
+            return false
         end
-    end
 
+    end
+end
+
+function BaseLogger:disable()
+    self.enabled = false
+    return self
+end
+
+function BaseLogger:enable()
+    if self.enableable then
+        self.enabled = true
+    end
+    return self
+end
+
+function BaseLogger:enabled()
+    return self.enabled and UsageLoggers:is_enabled()
+end
+
+function BaseLogger:host_lookup()
+    local dyno = os.getenv("DYNO")
+    if dyno ~= nil then
+        return dyno
+    end
+    return dns.gethostname() or "unknown"
+end
+
+function BaseLogger:version_lookup()
+    return os.getenv("VERSION") or VERSION
+end
 
 return BaseLogger
--- 
+-- TODO private fields, concurrency locks, compression

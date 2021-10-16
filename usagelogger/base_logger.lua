@@ -4,6 +4,7 @@ local ltn12 = require "ltn12"
 local http = require "socket.http"
 local url_parser = require ("socket.url").parse
 local dns = require("socket").dns
+local zlib = require "zlib"
 
 -- VERSION
 local VERSION = "0.1.0"
@@ -51,25 +52,34 @@ function BaseLogger:submit(msg)
     elseif self.queue ~= nil then
         table.insert(self.queue, msg)
     else
-        local response_body = { }
+        local headers = {
+            ["Connection"] =  "keep-alive",
+            ["User-Agent"] = string.format("Resurface/%s (%s)", self.version, self.agent),
+            ["Content-Type"] = "application/json; charset=UTF-8",
+            ["Content-Length"] = string.len(msg)
+        }
+
+        local body
+        if not self.skip_compression then
+            body = msg
+        else
+            headers["Content-Encoding"] = "deflate"
+            body = zlib.deflate()(msg, "finish")
+        end
+
+        local response_body = {}
         local _, code = http.request
             {
                 url = self.url,
                 method = "POST",
-                headers =
-                {
-                    ["Connection"] =  "keep-alive",
-                    ["User-Agent"] = string.format("Resurface/%s (%s)", self.version, self.agent),
-                    ["Content-Type"] = "application/json; charset=UTF-8",
-                    ["Content-Length"] = string.len(msg)
-                },
-                source = ltn12.source.string(msg),
+                headers = headers,
+                source = ltn12.source.string(body),
                 sink = ltn12.sink.table(response_body)
             }
         if code == 204 then
-            return true
+            return true, response_body
         else
-            return false
+            return false, response_body
         end
 
     end
@@ -104,4 +114,4 @@ function BaseLogger:version_lookup()
 end
 
 return BaseLogger
--- TODO private fields, concurrency locks, compression
+-- TODO private fields, concurrency locks

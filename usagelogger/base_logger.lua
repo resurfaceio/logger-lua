@@ -51,35 +51,33 @@ function BaseLogger:submit(msg)
 
     elseif self.queue ~= nil then
         table.insert(self.queue, msg)
+        self.submit_successes = self.submit_successes + 1
     else
         local headers = {
             ["Connection"] =  "keep-alive",
             ["User-Agent"] = string.format("Resurface/%s (%s)", self.version, self.agent),
             ["Content-Type"] = "application/json; charset=UTF-8",
-            ["Content-Length"] = string.len(msg)
         }
 
         local body
         if not self.skip_compression then
             body = msg
         else
-            headers["Content-Encoding"] = "deflate"
+            headers["Content-Encoding"] = "deflated"
             body = zlib.deflate()(msg, "finish")
         end
 
-        local response_body = {}
-        local _, code = http.request
+        local ok, code = http.request
             {
                 url = self.url,
                 method = "POST",
                 headers = headers,
                 source = ltn12.source.string(body),
-                sink = ltn12.sink.table(response_body)
             }
-        if code == 204 then
-            return true, response_body
+        if ok ~= nil and code == 204 then
+            self.submit_successes = self.submit_successes + 1
         else
-            return false, response_body
+            self.submit_failures = self.submit_failures + 1
         end
 
     end

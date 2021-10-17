@@ -20,14 +20,14 @@ function BaseLogger:new (o, agent, enabled, queue, url, skip_compression, skip_s
     setmetatable(o, self)
     self.__index = self
 
-    o.agent = agent or o.agent
+    o.agent = assert(agent or o.agent, "agent is required")
     o.host = self:host_lookup()
     o.skip_compression = skip_compression or o.skip_compression or false
     o.skip_submission = skip_submission or o.skip_submission or false
     o.version = self:version_lookup()
 
     o.url = url or o.url or UsageLoggers:url_by_default()
-    o.enabled = enabled or o.enabled
+    o.enabled = enabled or o.enabled or true
     o.queue = queue or o.queue
     if o.queue ~= nil then
         o.url = nil

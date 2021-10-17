@@ -3,16 +3,9 @@
 local HttpRequestImpl = require('usagelogger.http_request_impl')
 local HttpResponseImpl = require('usagelogger.http_response_impl')
 
---[[
-    kwargs = {method="POST"}
-    a = HttpRequestImpl:new(kwargs)
-    print(a.method)
-    print(a.url)
---]]
-
 local HttpMessage = {}
 
-function HttpMessage:send (o, logger, request, response, response_body, request_body, now, interval)
+function HttpMessage.send (o, logger, request, response, response_body, request_body, now, interval)
     o = o or {}
     logger = assert(logger or o.logger, "logger required")
     request = assert(request or o.request, "request required")
@@ -26,7 +19,7 @@ function HttpMessage:send (o, logger, request, response, response_body, request_
         return
     end
 
-    local message = self:build(nil, request, response, response_body, request_body)
+    local message = HttpMessage.build(nil, request, response, response_body, request_body)
 
     -- copy details from session
 
@@ -41,7 +34,7 @@ function HttpMessage:send (o, logger, request, response, response_body, request_
 
 end
 
-function HttpMessage:build (o, request, response, response_body, request_body)
+function HttpMessage.build (o, request, response, response_body, request_body)
     o = o or {}
     request = assert(request or o.request, "request_required")
     response = assert(response or o.response, "response_required")

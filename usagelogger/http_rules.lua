@@ -1,5 +1,7 @@
 -- © 2016-2021 Resurface Labs Inc.
 
+local re = require "regex"
+
 local HttpRules = {
    __DEBUG_RULES = [[
       allow_http_url
@@ -21,40 +23,40 @@ local HttpRules = {
 
 HttpRules.__default_rules = HttpRules.__STRICT_RULES
 
-function HttpRules:default_rules ()
-   return self.__default_rules
+function HttpRules.default_rules ()
+   return HttpRules.__default_rules
 end
 
-function HttpRules:set_default_rules (rules)
-   -- self.__default_rules = re.sub([[^\s*include default\s*$]], "", rules, MULTILINE)
+function HttpRules.set_default_rules (rules)
+   -- HttpRules.__default_rules = re.sub([[^\s*include default\s*$]], "", rules, MULTILINE)
 end
 
-function HttpRules:debug_rules ()
-   return self.__DEBUG_RULES
+function HttpRules.debug_rules ()
+   return HttpRules.__DEBUG_RULES
 end
 
-function HttpRules:standard_rules ()
-   return self.__STANDARD_RULES
+function HttpRules.standard_rules ()
+   return HttpRules.__STANDARD_RULES
 end
 
-function HttpRules:strict_rules ()
-   return self.__STRICT_RULES
+function HttpRules.strict_rules ()
+   return HttpRules.__STRICT_RULES
 end
 
 -- Parses rule from single
-function HttpRules:parse_rule (rules)
+function HttpRules.parse_rule (rules)
    
 end
 
-function HttpRules:parse_regex (rule, regex)
+function HttpRules.parse_regex (rule, regex)
    
 end
 
-function HttpRules:parse_regex_find (rule, regex)
+function HttpRules.parse_regex_find (rule, regex)
    
 end
 
-function HttpRules:parse_string (rule, expr)
+function HttpRules.parse_string (rule, expr)
    
 end
 

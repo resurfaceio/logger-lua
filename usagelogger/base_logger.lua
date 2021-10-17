@@ -1,10 +1,12 @@
 -- © 2016-2021 Resurface Labs Inc.
 
-local ltn12 = require "ltn12"
 local http = require "socket.http"
 local url_parser = require ("socket.url").parse
 local dns = require("socket").dns
+local ltn12 = require "ltn12"
 local zlib = require "zlib"
+
+local UsageLoggers = require "usagelogger.usage_loggers"
 
 -- VERSION
 local VERSION = "0.1.0"
@@ -13,7 +15,7 @@ local VERSION = "0.1.0"
 local BaseLogger = {}
 
 -- Constructor
-function BaseLogger:new(o, agent, enabled, queue, url, skip_compression, skip_submission)
+function BaseLogger:new (o, agent, enabled, queue, url, skip_compression, skip_submission)
     o = o or {}
     setmetatable(o, self)
     self.__index = self
@@ -30,9 +32,13 @@ function BaseLogger:new(o, agent, enabled, queue, url, skip_compression, skip_su
     if o.queue ~= nil then
         o.url = nil
     elseif o.url ~= nil and type(o.url) == "string" then
-        local parsed_url = url_parser(o.url)
-        assert(parsed_url ~= nil, "invalid URL")
-        assert(parsed_url.scheme == "http" or parsed_url.scheme == "https", "incorrect URL scheme")
+        local parsed_url, err = url_parser(o.url)
+        if err == nil then
+            assert(parsed_url.scheme == "http" or parsed_url.scheme == "https", "incorrect URL scheme")
+        else
+            self.enabled = false
+            self.url = nil
+        end
     else
         o.enabled = false
         o.url = nil
@@ -46,7 +52,7 @@ function BaseLogger:new(o, agent, enabled, queue, url, skip_compression, skip_su
 end
 
 -- Submits JSON message to intended destination.
-function BaseLogger:submit(msg)
+function BaseLogger:submit (msg)
     if msg == nil or self.skip_submission == true or self.enabled == false then
 
     elseif self.queue ~= nil then
@@ -67,13 +73,12 @@ function BaseLogger:submit(msg)
             body = zlib.deflate()(msg, "finish")
         end
 
-        local ok, code = http.request
-            {
-                url = self.url,
-                method = "POST",
-                headers = headers,
-                source = ltn12.source.string(body),
-            }
+        local ok, code = http.request {
+            url = self.url,
+            method = "POST",
+            headers = headers,
+            source = ltn12.source.string(body),
+        }
         if ok ~= nil and code == 204 then
             self.submit_successes = self.submit_successes + 1
         else
@@ -83,23 +88,25 @@ function BaseLogger:submit(msg)
     end
 end
 
-function BaseLogger:disable()
+function BaseLogger:disable ()
     self.enabled = false
     return self
 end
 
-function BaseLogger:enable()
+function BaseLogger:enable ()
     if self.enableable then
         self.enabled = true
     end
     return self
 end
 
-function BaseLogger:enabled()
-    return self.enabled and UsageLoggers:is_enabled()
-end
+--[[
+    function BaseLogger:enabled ()
+        return self.enabled and UsageLoggers:is_enabled()
+    end
+--]]
 
-function BaseLogger:host_lookup()
+function BaseLogger:host_lookup ()
     local dyno = os.getenv("DYNO")
     if dyno ~= nil then
         return dyno
@@ -107,7 +114,7 @@ function BaseLogger:host_lookup()
     return dns.gethostname() or "unknown"
 end
 
-function BaseLogger:version_lookup()
+function BaseLogger:version_lookup ()
     return os.getenv("VERSION") or VERSION
 end
 

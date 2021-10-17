@@ -1,8 +1,10 @@
 local luaunit = require('luaunit')
+local cjson = require('cjson')
 
 
-BaseLogger = require('usagelogger.base_logger')
-UsageLoggers = require('usagelogger.usage_loggers')
+local BaseLogger = require('usagelogger.base_logger')
+local HttpLogger = require('usagelogger.http_logger')
+local UsageLoggers = require('usagelogger.usage_loggers')
 
 
 TestBaseLogger = {}
@@ -21,7 +23,6 @@ function TestBaseLogger:testHttpSuccess()
     luaunit.assertEquals(b.submit_successes, 1)
 end
 
-
 TestUsageLogger = {}
 
 function TestUsageLogger:testEnableDisable()
@@ -31,5 +32,17 @@ function TestUsageLogger:testEnableDisable()
     luaunit.assertEquals(UsageLoggers.__disabled, false)
 end
 
+TestHttpLogger = {}
+
+function TestHttpLogger:testSubmitIfPassing()
+    local queue = {}
+    local logger = HttpLogger:new{queue=queue}
+    
+    local msg = "world"
+    logger:submitIfPassing(msg)
+    luaunit.assertEquals(#queue, 1)
+    local decoded = cjson.decode(queue[1])
+    luaunit.assertEquals(decoded[2][1], msg)
+end
 
 luaunit.run()

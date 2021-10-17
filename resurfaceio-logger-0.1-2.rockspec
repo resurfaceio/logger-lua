@@ -1,13 +1,13 @@
-package = "logger-lua"
-version = "dev-1"
+package = "resurfaceio-logger"
+version = "0.1-2"
 source = {
-   url = "*** please add URL for source tarball, zip or repository here ***"
+   url = "git+https://github.com/resurfaceio/logger-lua"
 }
 description = {
-   summary = "...",
+   summary = "Log API requests and responses with Lua",
    detailed = "...",
-   homepage = "*** please enter a project homepage ***",
-   license = "*** please specify a license ***"
+   homepage = "https://github.com/resurfaceio/logger-lua",
+   license = "Apache-2.0"
 }
 dependencies = {
    "lua ~> 5.3"

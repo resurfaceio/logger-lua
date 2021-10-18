@@ -52,19 +52,25 @@ function HttpMessage.build (o, request, response, response_body, request_body)
     end
 
     if response.status then
-        table.insert(message, {"response_code", response.status})
+        table.insert(message, {"response_code", response.status .. ""})
     end
 
-    for k, v in pairs(request.headers) do
-        table.insert(message, {string.lower("request_header:" .. k), v})
+    if request.headers then
+        for k, v in pairs(request.headers) do
+            table.insert(message, {string.lower("request_header:" .. k), v})
+        end
     end
 
-    for k, v in pairs(request.params) do
-        table.insert(message, {string.lower("request_param:" .. k), v})
+    if request.params then
+        for k, v in pairs(request.params) do
+            table.insert(message, {string.lower("request_param:" .. k), v})
+        end
     end
 
-    for k, v in pairs(response.headers) do
-        table.insert(message, {string.lower("response_header:" .. k), v})
+    if response.headers then
+        for k, v in pairs(response.headers) do
+            table.insert(message, {string.lower("response_header:" .. k), v})
+        end
     end
 
     request_body = request_body or request.body

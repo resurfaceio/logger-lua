@@ -2,24 +2,25 @@
 
 local HttpRule = require "usagelogger.http_rule"
 local re = require "usagelogger.utils.re"
+local string = require "usagelogger.utils.str"
 
-local __REGEX_ALLOW_HTTP_URL = re.new([[^\s*allow_http_url\s*(#.*)?$]], "gm")
-local __REGEX_BLANK_OR_COMMENT = re.new([[^\s*([#].*)*$]], "gm")
-local __REGEX_COPY_SESSION_FIELD = re.new([[^\s*copy_session_field\s+([~!%|/].+[~!%|/])\s*(#.*)?$]], "gm")
-local __REGEX_REMOVE = re.new([[^\s*([~!%|/].+[~!%|/])\s*remove\s*(#.*)?$]], "gm")
-local __REGEX_REMOVE_IF = re.new([[^\s*([~!%|/].+[~!%|/])\s*remove_if\s+([~!%|/].+[~!%|/])\s*(#.*)?$]], "gm")
-local __REGEX_REMOVE_IF_FOUND = re.new([[^\s*([~!%|/].+[~!%|/])\s*remove_if_found\s+([~!%|/].+[~!%|/])\s*(#.*)?$]], "gm")
-local __REGEX_REMOVE_UNLESS = re.new([[^\s*([~!%|/].+[~!%|/])\s*remove_unless\s+([~!%|/].+[~!%|/])\s*(#.*)?$]], "gm")
-local __REGEX_REMOVE_UNLESS_FOUND = re.new([[^\s*([~!%|/].+[~!%|/])\s*remove_unless_found\s+([~!%|/].+[~!%|/])\s*(#.*)?$]], "gm")
-local __REGEX_REPLACE = re.new([[^\s*([~!%|/].+[~!%|/])\s*replace[\s]+([~!%|/].+[~!%|/]),[\s]+([~!%|/].*[~!%|/])\s*(#.*)?$]], "gm")
-local __REGEX_SAMPLE = re.new([[^\s*sample\s+(\d+)\s*(#.*)?$]], "gm")
-local __REGEX_SKIP_COMPRESSION = re.new([[^\s*skip_compression\s*(#.*)?$]], "gm")
-local __REGEX_SKIP_SUBMISSION = re.new([[^\s*skip_submission\s*(#.*)?$]], "gm")
-local __REGEX_STOP = re.new([[^\s*([~!%|/].+[~!%|/])\s*stop\s*(#.*)?$]], "gm")
-local __REGEX_STOP_IF = re.new([[^\s*([~!%|/].+[~!%|/])\s*stop_if\s+([~!%|/].+[~!%|/])\s*(#.*)?$]], "gm")
-local __REGEX_STOP_IF_FOUND = re.new([[^\s*([~!%|/].+[~!%|/])\s*stop_if_found\s+([~!%|/].+[~!%|/])\s*(#.*)?$]], "gm")
-local __REGEX_STOP_UNLESS = re.new([[^\s*([~!%|/].+[~!%|/])\s*stop_unless\s+([~!%|/].+[~!%|/])\s*(#.*)?$]], "gm")
-local __REGEX_STOP_UNLESS_FOUND = re.new([[^\s*([~!%|/].+[~!%|/])\s*stop_unless_found\s+([~!%|/].+[~!%|/])\s*(#.*)?$]], "gm")
+local __REGEX_ALLOW_HTTP_URL = re.new([[^\s*allow_http_url\s*(#.*)?$]])
+local __REGEX_BLANK_OR_COMMENT = re.new([[^\s*([#].*)*$]])
+local __REGEX_COPY_SESSION_FIELD = re.new([[^\s*copy_session_field\s+([~!%|/].+[~!%|/])\s*(#.*)?$]])
+local __REGEX_REMOVE = re.new([[^\s*([~!%|/].+[~!%|/])\s*remove\s*(#.*)?$]])
+local __REGEX_REMOVE_IF = re.new([[^\s*([~!%|/].+[~!%|/])\s*remove_if\s+([~!%|/].+[~!%|/])\s*(#.*)?$]])
+local __REGEX_REMOVE_IF_FOUND = re.new([[^\s*([~!%|/].+[~!%|/])\s*remove_if_found\s+([~!%|/].+[~!%|/])\s*(#.*)?$]])
+local __REGEX_REMOVE_UNLESS = re.new([[^\s*([~!%|/].+[~!%|/])\s*remove_unless\s+([~!%|/].+[~!%|/])\s*(#.*)?$]])
+local __REGEX_REMOVE_UNLESS_FOUND = re.new([[^\s*([~!%|/].+[~!%|/])\s*remove_unless_found\s+([~!%|/].+[~!%|/])\s*(#.*)?$]])
+local __REGEX_REPLACE = re.new([[^\s*([~!%|/].+[~!%|/])\s*replace[\s]+([~!%|/].+[~!%|/]),[\s]+([~!%|/].*[~!%|/])\s*(#.*)?$]])
+local __REGEX_SAMPLE = re.new([[^\s*sample\s+(\d+)\s*(#.*)?$]])
+local __REGEX_SKIP_COMPRESSION = re.new([[^\s*skip_compression\s*(#.*)?$]])
+local __REGEX_SKIP_SUBMISSION = re.new([[^\s*skip_submission\s*(#.*)?$]])
+local __REGEX_STOP = re.new([[^\s*([~!%|/].+[~!%|/])\s*stop\s*(#.*)?$]])
+local __REGEX_STOP_IF = re.new([[^\s*([~!%|/].+[~!%|/])\s*stop_if\s+([~!%|/].+[~!%|/])\s*(#.*)?$]])
+local __REGEX_STOP_IF_FOUND = re.new([[^\s*([~!%|/].+[~!%|/])\s*stop_if_found\s+([~!%|/].+[~!%|/])\s*(#.*)?$]])
+local __REGEX_STOP_UNLESS = re.new([[^\s*([~!%|/].+[~!%|/])\s*stop_unless\s+([~!%|/].+[~!%|/])\s*(#.*)?$]])
+local __REGEX_STOP_UNLESS_FOUND = re.new([[^\s*([~!%|/].+[~!%|/])\s*stop_unless_found\s+([~!%|/].+[~!%|/])\s*(#.*)?$]])
 
 local HttpRules = {
    __DEBUG_RULES = [[
@@ -213,18 +214,16 @@ function HttpRules.parse_regex (rule, regex)
    if string.sub(s,-1,-1) ~= "$" then
       s = s .. "$"
    end
-   return assert(
-      re.new(s),
-      string.format("Invalid regex (%s) in rule: %s", regex, rule)
-   )
+   local r = re.new(s)
+   assert(r and r.p, string.format("Invalid regex (%s) in rule: %s", regex, rule))
+   return r
 end
 
 -- Parses regex for finding.
 function HttpRules.parse_regex_find (rule, regex)
-   return assert(
-      re.new(HttpRules.parse_string(rule, regex)),
-      string.format("Invalid regex (%s) in rule: %s", regex, rule)
-   )
+   local r = re.new(HttpRules.parse_string(rule, regex))
+   assert(r and r.p, string.format("Invalid regex (%s) in rule: %s", regex, rule))
+   return r
 end
 
 -- Parses delimited string expression.
@@ -238,11 +237,7 @@ function HttpRules.parse_string (rule, expr)
          if m1p:match(m1) then
             error(string.format("Unescaped separator (%s) in rule: %s", sep, rule))
          end
-         local t = {}
-         local s = ""
-         for str in string.gmatch(m1, "([^" .. "\\" + sep .. "]+)") do table.insert(t, str) end
-         for _, i in pairs(t) do s = s .. sep .. i end
-         return s
+         return string.join(string.split(m1, "([^" .. "\\" .. sep .. "]+)"), sep)
       end
    end
    error(string.format("Invalid expression (%s) in rule: %s", expr, rule))
@@ -254,16 +249,16 @@ function HttpRules:new (o, rules)
    setmetatable(o, self)
    self.__index = self
 
-   o.rules = rules or o.rules
-   if o.rules == nil then
-      o.rules = self.__default_rules
+   rules = rules or o.rules
+   if rules == nil then
+      rules = self.__default_rules
    end
 
    -- load rules from external files
-   if string.sub(o.rules, 1, 7) == "file://" then
-      local rfile = string.sub(o.rules, 7, -1)
+   if string.sub(rules, 1, 7) == "file://" then
+      local rfile = string.sub(rules, 7, -1)
       local file = assert(io.open(rfile, "r"), string.format("Failed to load rules: %s", rfile))
-      o.rules = file:read()
+      rules = file:read()
       file:close()
    end
 
@@ -279,15 +274,14 @@ function HttpRules:new (o, rules)
    end
 
    -- expand rule includes
-   rules = re.sub([[(?m)^\s*include debug\s*$]], HttpRules.debug_rules(), rules)
-   rules = re.sub([[(?m)^\s*include standard\s*$]], HttpRules.standard_rules(), rules)
-   rules = re.sub([[(?m)^\s*include strict\s*$]], HttpRules.strict_rules(), rules)
+   rules = re.sub([[^\s*include debug\s*$]], HttpRules.debug_rules(), rules, "m")
+   rules = re.sub([[^\s*include standard\s*$]], HttpRules.standard_rules(), rules, "m")
+   rules = re.sub([[^\s*include strict\s*$]], HttpRules.strict_rules(), rules, "m")
    o._text = rules
 
    -- parse all rules
    local prs = {}
-   local split = {}
-   for str in string.gmatch(rules, [[([^\n]+)]]) do table.insert(split, str) end
+   local split = string.split(rules, "([^\n]+)")
    for _, rule in pairs(split) do
       local parsed = HttpRules.parse_rule(rule)
       if parsed ~= nil then
@@ -300,14 +294,14 @@ function HttpRules:new (o, rules)
    local function list (verb)
       local t = {}
       for _, r in pairs(prs) do
-         if verb == r.verb() then
+         if verb == r:verb() then
             table.insert(t, r)
          end
       end
       return t
    end
 
-   o._allow_http_url = #list("allow_http_rules") > 0
+   o._allow_http_url = #list("allow_http_url") > 0
 
    o._copy_session_field = list("copy_session_field")
 
@@ -340,9 +334,9 @@ function HttpRules:new (o, rules)
    o._stop_unless_found = list("stop_unless_found")
 
    -- validate rules
-   if #self._sample > 1 then
-      error("Multiple sample rules")
-   end
+   -- if #self._sample > 1 then
+   --    error("Multiple sample rules")
+   -- end
 
    return o
 end
@@ -473,7 +467,7 @@ function HttpRules:apply (details)
    end
 
    -- do sampling if configured
-   -- if #self._sample) == 1 and random.randrange(100) >= int(
+   -- if #self._sample == 1 and random.randrange(100) >= int(
    --    self._sample[0].param1
    -- ) then
    --    return nil

@@ -38,7 +38,7 @@ function HttpMessage.build (o, request, response, response_body, request_body)
     o = o or {}
     request = assert(request or o.request, "request_required")
     response = assert(response or o.response, "response_required")
-    response_body = request_body or o.response_body
+    response_body = response_body or o.response_body
     request_body = request_body or o.request_body
 
     local message = {}

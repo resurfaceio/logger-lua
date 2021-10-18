@@ -72,6 +72,7 @@ function BaseLogger:submit (msg)
             headers["Content-Encoding"] = "deflated"
             body = zlib.deflate()(msg, "finish")
         end
+        headers["Content-Length"] = #body
 
         local ok, code = http.request {
             url = self.url,

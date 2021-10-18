@@ -4,6 +4,7 @@ local regex = require "regex"
 regex.sub = function (pattern, repl, str, flags)
     local rgx = regex.new(pattern, flags)
     local h, t = rgx:indexesof(str)
+    if h == nil then return str end
     assert(#h == #t)
     local s = ""
     for i in pairs(h) do

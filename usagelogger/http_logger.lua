@@ -5,9 +5,9 @@ local cjson = require 'cjson'
 local BaseLogger = require('usagelogger.base_logger')
 local HttpRules = require('usagelogger.http_rules')
 
+local AGENT = "http_logger.lua"
 -- Prototype metatable: instance of "parent class"
-local HttpLogger = BaseLogger:new()
-HttpLogger.agent = "http_logger.lua"
+local HttpLogger = BaseLogger:new{agent = AGENT}
 
 -- Constructor
 function HttpLogger:new (o, enabled, queue, url, skip_compression, skip_submission, rules)
@@ -15,9 +15,10 @@ function HttpLogger:new (o, enabled, queue, url, skip_compression, skip_submissi
     enabled = enabled ~= nil and enabled or true
     skip_compression = skip_compression or false
     skip_submission = skip_submission or false
-
+    
     o = o or {}
     o = BaseLogger.new(self, o, self.AGENT, enabled, queue, url, skip_compression, skip_submission)
+    rules = rules or o.rules
 
     o.rules = HttpRules:new{rules=rules}
     return o

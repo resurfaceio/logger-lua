@@ -36,9 +36,7 @@ local HttpRules = {
       /request_url/ replace /([^\?;]+).*/, !\\1!
       /request_body|response_body|request_param:.*|request_header:(?!user-agent).*|response_header:(?!(content-length)|(content-type)).*/ remove
    ]],
-   __index = {
-      __len = function (t) return t._length end
-   }
+   __len = function (t) return t._length end
 }
 
 HttpRules.__default_rules = HttpRules.__STRICT_RULES

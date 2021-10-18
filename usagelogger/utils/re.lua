@@ -1,5 +1,6 @@
-local regex = require "regex"
+-- © 2016-2021 Resurface Labs Inc.
 
+local regex = require "regex"
 
 regex.sub = function (pattern, repl, str, flags)
     local rgx = regex.new(pattern, flags)

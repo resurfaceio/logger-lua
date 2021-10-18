@@ -15,7 +15,7 @@ function HttpLogger:new (o, enabled, queue, url, skip_compression, skip_submissi
     enabled = enabled ~= nil and enabled or true
     skip_compression = skip_compression or false
     skip_submission = skip_submission or false
-    
+
     o = o or {}
     o = BaseLogger.new(self, o, self.AGENT, enabled, queue, url, skip_compression, skip_submission)
     rules = rules or o.rules
@@ -33,7 +33,6 @@ function HttpLogger:submitIfPassing (details)
     table.insert(details, {"host", self.host})
 
     self:submit(cjson.encode(details))
-    -- print(cjson.encode(details))
 end
 
 return HttpLogger

@@ -1,3 +1,5 @@
+-- © 2016-2021 Resurface Labs Inc.
+
 local str = require "string"
 
 function str.split (s, sep)

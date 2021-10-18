@@ -141,9 +141,7 @@ function HttpRules.parse_rule (rule)
    if m then
       local msg = "Invalid sample percent: " .. m[2]
       local m1 = assert(m[2] + 0, msg)
-      if m1 < 1 or m1 > 99 then
-          error(msg)
-      end
+      assert(m1 >= 1 and m1 <= 99, msg)
       return HttpRule:new(nil, "sample", nil, m1)
    end
 
@@ -334,9 +332,7 @@ function HttpRules:new (o, rules)
    o._stop_unless_found = list("stop_unless_found")
 
    -- validate rules
-   -- if #self._sample > 1 then
-   --    error("Multiple sample rules")
-   -- end
+   assert(#o._sample < 2, "Multiple sample rules")
 
    return o
 end
@@ -467,11 +463,9 @@ function HttpRules:apply (details)
    end
 
    -- do sampling if configured
-   -- if #self._sample == 1 and random.randrange(100) >= int(
-   --    self._sample[0].param1
-   -- ) then
-   --    return nil
-   -- end
+   if #self._sample == 1 and math.random(100) >= self._sample[1]:param1() then
+      return nil
+   end
 
    -- winnow sensitive details based on remove rules if configured
    for _, r in pairs(self._remove) do
@@ -552,4 +546,3 @@ end
 
 
 return HttpRules
--- TODO sampling

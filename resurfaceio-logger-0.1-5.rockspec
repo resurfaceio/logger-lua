@@ -1,5 +1,5 @@
 package = "resurfaceio-logger"
-version = "0.1-2"
+version = "0.1-5"
 source = {
    url = "git+https://github.com/resurfaceio/logger-lua"
 }
@@ -48,5 +48,6 @@ build = {
       ["tests.test_baselogger"] = "tests/test_baselogger.lua",
       ["tests.test_httplogger"] = "tests/test_httplogger.lua",
       ["tests.test_usagelogger"] = "tests/test_usagelogger.lua",
+      ["tests.test_helper"] = "tests/test_helper.lua",
    }
 }

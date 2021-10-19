@@ -1,6 +1,7 @@
 -- © 2016-2021 Resurface Labs Inc.
 
 return {
+    _VERSION = require 'usagelogger.usage_loggers'._VERSION,
     HttpLogger = require 'usagelogger.http_logger',
     HttpMessage = require 'usagelogger.http_message',
     HttpRequestImpl = require 'usagelogger.http_request_impl',

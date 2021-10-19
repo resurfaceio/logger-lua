@@ -34,7 +34,6 @@ build = {
    type = "builtin",
    modules = {
       ["resurfaceio-logger"] = "resurfaceio-logger.lua",
-      ["resurfaceio-test"] = "tests/test.lua",
       ["usagelogger.base_logger"] = "usagelogger/base_logger.lua",
       ["usagelogger.http_logger"] = "usagelogger/http_logger.lua",
       ["usagelogger.http_message"] = "usagelogger/http_message.lua",
@@ -44,7 +43,10 @@ build = {
       ["usagelogger.http_rules"] = "usagelogger/http_rules.lua",
       ["usagelogger.usage_loggers"] = "usagelogger/usage_loggers.lua",
       ["usagelogger.utils.re"] = "usagelogger/utils/re.lua",
-      ["usagelogger.utils.str"] = "usagelogger/utils/str.lua"
-   },
-   copy_directories = { "tests" }
+      ["usagelogger.utils.str"] = "usagelogger/utils/str.lua",
+      ["resurfaceio-test"] = "tests/test.lua",
+      ["tests.test_baselogger"] = "tests/test_baselogger.lua",
+      ["tests.test_httplogger"] = "tests/test_httplogger.lua",
+      ["tests.test_usagelogger"] = "tests/test_usagelogger.lua",
+   }
 }

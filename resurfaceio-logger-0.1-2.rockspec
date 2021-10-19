@@ -24,7 +24,7 @@ description = {
    license = "Apache-2.0"
 }
 dependencies = {
-   "lua ~> 5.3",
+   "lua >= 5.3, < 5.4.2",
    "lua-cjson=2.1.0-1",
    "lua-zlib",
    "regex",
@@ -34,6 +34,17 @@ build = {
    type = "builtin",
    modules = {
       ["resurfaceio-logger"] = "resurfaceio-logger.lua",
-      ["logger-tests"] = "logger-tests.lua",
-   }
+      ["resurfaceio-test"] = "tests/test.lua",
+      ["usagelogger.base_logger"] = "usagelogger/base_logger.lua",
+      ["usagelogger.http_logger"] = "usagelogger/http_logger.lua",
+      ["usagelogger.http_message"] = "usagelogger/http_message.lua",
+      ["usagelogger.http_request_impl"] = "usagelogger/http_request_impl.lua",
+      ["usagelogger.http_response_impl"] = "usagelogger/http_response_impl.lua",
+      ["usagelogger.http_rule"] = "usagelogger/http_rule.lua",
+      ["usagelogger.http_rules"] = "usagelogger/http_rules.lua",
+      ["usagelogger.usage_loggers"] = "usagelogger/usage_loggers.lua",
+      ["usagelogger.utils.re"] = "usagelogger/utils/re.lua",
+      ["usagelogger.utils.str"] = "usagelogger/utils/str.lua"
+   },
+   copy_directories = { "tests" }
 }

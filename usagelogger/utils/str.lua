@@ -27,4 +27,12 @@ function str.strip (s)
     return res
 end
 
+function str.starts (s, head)
+    return string.len(s) >= string.len(head) and string.sub(s, 1, string.len(head)) == head
+end
+
+function str.ends (s, tail)
+    return string.len(s) >= string.len(tail) and string.sub(s, -string.len(tail), -1) == tail
+end
+
 return str

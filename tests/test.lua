@@ -2,7 +2,7 @@
 local luaunit = require('luaunit')
 
 require 'tests.test_usagelogger'
--- require 'tests.test_httplogger'
+require 'tests.test_httplogger'
 require 'tests.test_baselogger'
 
 

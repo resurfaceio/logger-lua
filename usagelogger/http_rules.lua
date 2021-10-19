@@ -204,10 +204,10 @@ end
 -- Parses regex for matching.
 function HttpRules.parse_regex (rule, regex)
    local s = HttpRules.parse_string(rule, regex)
-   if string.sub(s, 1, 1) ~= "^" then
+   if not string.starts(s, "^") then
       s = "^" .. s
    end
-   if string.sub(s,-1,-1) ~= "$" then
+   if not string.ends(s, "$") then
       s = s .. "$"
    end
    local r = re.new(s)
@@ -251,8 +251,8 @@ function HttpRules:new (o, rules)
    end
 
    -- load rules from external files
-   if string.sub(rules, 1, 7) == "file://" then
-      local rfile = string.sub(rules, 7, -1)
+   if string.starts(rules, "file://") then
+      local rfile = string.sub(rules, 8, -1)
       local file = assert(io.open(rfile, "r"), string.format("Failed to load rules: %s", rfile))
       rules = file:read()
       file:close()

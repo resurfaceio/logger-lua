@@ -56,7 +56,7 @@ function TestBaseLogger:testCreatesMultipleInstances()
 
 end
 
-function test_has_valid_host()
+function TestBaseLogger:testHasValidHost()
     host = BaseLogger.host_lookup()
     assert (host ~= nil)
     assert (string.len(host) > 0)

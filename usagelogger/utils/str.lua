@@ -1,3 +1,5 @@
+-- © 2016-2021 Resurface Labs Inc.
+
 local str = require "string"
 
 function str.split (s, sep)
@@ -23,6 +25,14 @@ end
 function str.strip (s)
     local res, _ = string.gsub(s, '^%s*(.-)%s*$', '%1')
     return res
+end
+
+function str.starts (s, head)
+    return string.len(s) >= string.len(head) and string.sub(s, 1, string.len(head)) == head
+end
+
+function str.ends (s, tail)
+    return string.len(s) >= string.len(tail) and string.sub(s, -string.len(tail), -1) == tail
 end
 
 return str

@@ -1,46 +1,45 @@
-local luaunit = require('luaunit')
+-- © 2016-2021 Resurface Labs Inc.
+
+local lu = require('luaunit')
 
 local BaseLogger = require('usagelogger.base_logger')
-
-helpers = require('tests.test_helper')
-
-
+local helpers = require('tests.test_helper')
 
 
 TestBaseLogger = {}
 
 function TestBaseLogger:testCreatesInstance()
     local logger = BaseLogger:new{agent=helpers.MOCK_AGENT}
-    assert (logger ~= nil)
-    assert (logger.agent == helpers.MOCK_AGENT)
-    assert (logger.enableable == false)
-    assert (logger.enabled == false)
-    assert (logger.queue == nil)
-    assert (logger.url == nil)
+    lu.assertNotNil(logger)
+    lu.assertEquals(logger.agent, helpers.MOCK_AGENT)
+    lu.assertIsFalse(logger.enableable)
+    lu.assertIsFalse(logger.enabled)
+    lu.assertIsNil(logger.queue)
+    lu.assertIsNil(logger.url)
 end
 
 function TestBaseLogger:testCreatesMultipleInstances()
-    agent1 = "agent1"
-    agent2 = "AGENT2"
-    agent3 = "aGeNt3"
-    url1 = "http://resurface.io"
-    url2 = "http://whatever.com"
-    logger1 = BaseLogger:new{agent=agent1, url=url1}
-    logger2 = BaseLogger:new{agent=agent2, url=url2}
-    logger3 = BaseLogger:new{agent=agent3, url=helpers.DEMO_URL}
+    local agent1 = "agent1"
+    local agent2 = "AGENT2"
+    local agent3 = "aGeNt3"
+    local url1 = "http://resurface.io"
+    local url2 = "http://whatever.com"
+    local logger1 = BaseLogger:new{agent=agent1, url=url1}
+    local logger2 = BaseLogger:new{agent=agent2, url=url2}
+    local logger3 = BaseLogger:new{agent=agent3, url=helpers.DEMO_URL}
 
-    assert (logger1.agent == agent1)
-    assert (logger1.enableable == true)
-    assert (logger1.enabled == true)
-    assert (logger1.url == url1)
-    assert (logger2.agent == agent2)
-    assert (logger2.enableable == true)
-    assert (logger2.enabled == true)
-    assert (logger2.url == url2)
-    assert (logger3.agent == agent3)
-    assert (logger3.enableable == true)
-    assert (logger3.enabled == true)
-    assert (logger3.url == helpers.DEMO_URL)
+    lu.assertEquals(logger1.agent, agent1)
+    lu.assertIsTrue(logger1.enableable)
+    lu.assertIsTrue(logger1.enabled)
+    lu.assertEquals(logger1.url, url1)
+    lu.assertEquals(logger2.agent, agent2)
+    lu.assertIsTrue(logger2.enableable)
+    lu.assertIsTrue(logger2.enabled)
+    lu.assertEquals(logger2.url, url2)
+    lu.assertEquals(logger3.agent, agent3)
+    lu.assertIsTrue(logger3.enableable)
+    lu.assertIsTrue(logger3.enabled)
+    lu.assertEquals(logger3.url, helpers.DEMO_URL)
 
     -- UsageLoggers:disable()
     -- assert (UsageLoggers:is_enabled() == false)
@@ -56,11 +55,11 @@ function TestBaseLogger:testCreatesMultipleInstances()
 
 end
 
-function TestBaseLogger:testHasValidHost()
-    host = BaseLogger.host_lookup()
-    assert (host ~= nil)
-    assert (string.len(host) > 0)
-    assert (host ~= "unknown")
+function TestBaseLogger:test_has_valid_host()
+    local host = BaseLogger.host_lookup()
+    lu.assertNotNil (host)
+    lu.assertIsTrue(string.len(host) > 0)
+    lu.assertNotEquals (host, "unknown")
     -- tmp = BaseLogger:new()
     -- assert (host == tmp.host )
 end

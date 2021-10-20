@@ -36,9 +36,7 @@ local HttpRules = {
       /request_url/ replace /([^\?;]+).*/, !\\1!
       /request_body|response_body|request_param:.*|request_header:(?!user-agent).*|response_header:(?!(content-length)|(content-type)).*/ remove
    ]],
-   __index = {
-      __len = function (t) return t._length end
-   }
+   __len = function (t) return t._length end
 }
 
 HttpRules.__default_rules = HttpRules.__STRICT_RULES
@@ -141,9 +139,7 @@ function HttpRules.parse_rule (rule)
    if m then
       local msg = "Invalid sample percent: " .. m[2]
       local m1 = assert(m[2] + 0, msg)
-      if m1 < 1 or m1 > 99 then
-          error(msg)
-      end
+      assert(m1 >= 1 and m1 <= 99, msg)
       return HttpRule:new(nil, "sample", nil, m1)
    end
 
@@ -208,10 +204,10 @@ end
 -- Parses regex for matching.
 function HttpRules.parse_regex (rule, regex)
    local s = HttpRules.parse_string(rule, regex)
-   if string.sub(s, 1, 1) ~= "^" then
+   if not string.starts(s, "^") then
       s = "^" .. s
    end
-   if string.sub(s,-1,-1) ~= "$" then
+   if not string.ends(s, "$") then
       s = s .. "$"
    end
    local r = re.new(s)
@@ -255,8 +251,8 @@ function HttpRules:new (o, rules)
    end
 
    -- load rules from external files
-   if string.sub(rules, 1, 7) == "file://" then
-      local rfile = string.sub(rules, 7, -1)
+   if string.starts(rules, "file://") then
+      local rfile = string.sub(rules, 8, -1)
       local file = assert(io.open(rfile, "r"), string.format("Failed to load rules: %s", rfile))
       rules = file:read()
       file:close()
@@ -334,9 +330,7 @@ function HttpRules:new (o, rules)
    o._stop_unless_found = list("stop_unless_found")
 
    -- validate rules
-   -- if #self._sample > 1 then
-   --    error("Multiple sample rules")
-   -- end
+   assert(#o._sample < 2, "Multiple sample rules")
 
    return o
 end
@@ -467,11 +461,9 @@ function HttpRules:apply (details)
    end
 
    -- do sampling if configured
-   -- if #self._sample == 1 and random.randrange(100) >= int(
-   --    self._sample[0].param1
-   -- ) then
-   --    return nil
-   -- end
+   if #self._sample == 1 and math.random(100) >= self._sample[1]:param1() then
+      return nil
+   end
 
    -- winnow sensitive details based on remove rules if configured
    for _, r in pairs(self._remove) do
@@ -552,4 +544,3 @@ end
 
 
 return HttpRules
--- TODO sampling

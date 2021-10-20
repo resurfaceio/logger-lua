@@ -8,9 +8,6 @@ local zlib = require "zlib"
 
 local UsageLoggers = require "usagelogger.usage_loggers"
 
--- VERSION
-local VERSION = "0.1.0"
-
 -- Prototype metatable
 local BaseLogger = {}
 
@@ -72,6 +69,7 @@ function BaseLogger:submit (msg)
             headers["Content-Encoding"] = "deflated"
             body = zlib.deflate()(msg, "finish")
         end
+        headers["Content-Length"] = #body
 
         local ok, code = http.request {
             url = self.url,
@@ -115,7 +113,7 @@ function BaseLogger:host_lookup ()
 end
 
 function BaseLogger:version_lookup ()
-    return os.getenv("VERSION") or VERSION
+    return os.getenv("VERSION") or UsageLoggers._VERSION
 end
 
 return BaseLogger

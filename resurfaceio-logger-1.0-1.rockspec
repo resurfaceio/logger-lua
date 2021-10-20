@@ -1,5 +1,6 @@
+rockspec_format = "3.0"
 package = "resurfaceio-logger"
-version = "0.1-5"
+version = "1.0-1"
 source = {
    url = "git+https://github.com/resurfaceio/logger-lua"
 }
@@ -44,10 +45,11 @@ build = {
       ["usagelogger.usage_loggers"] = "usagelogger/usage_loggers.lua",
       ["usagelogger.utils.re"] = "usagelogger/utils/re.lua",
       ["usagelogger.utils.str"] = "usagelogger/utils/str.lua",
-      ["resurfaceio-test"] = "tests/test.lua",
-      ["tests.test_baselogger"] = "tests/test_baselogger.lua",
-      ["tests.test_httplogger"] = "tests/test_httplogger.lua",
-      ["tests.test_usagelogger"] = "tests/test_usagelogger.lua",
-      ["tests.test_helper"] = "tests/test_helper.lua",
-   }
+   },
+   copy_directories = {"tests"}
+}
+test_dependencies = { "luaunit" }
+test = {
+   type = "command",
+   script = "tests/test.lua"
 }

@@ -1,10 +1,7 @@
 -- © 2016-2021 Resurface Labs Inc.
 
-local http = require "socket.http"
-local url_parser = require ("socket.url").parse
-local dns = require("socket").dns
-local ltn12 = require "ltn12"
-local zlib = require "zlib"
+local httpc = require("resty.http").new()
+local zlib = require "ffi-zlib"
 
 local UsageLoggers = require "usagelogger.usage_loggers"
 
@@ -29,9 +26,9 @@ function BaseLogger:new (o, agent, enabled, queue, url, skip_compression, skip_s
     if o.queue ~= nil then
         o.url = nil
     elseif o.url ~= nil and type(o.url) == "string" then
-        local parsed_url, err = url_parser(o.url)
-        if err == nil then
-            assert(parsed_url.scheme == "http" or parsed_url.scheme == "https", "incorrect URL scheme")
+        local parsed_url = httpc:parse_uri(o.url)
+        if parsed_url ~= nil then
+            assert(parsed_url[1] == "http" or parsed_url[1] == "https", "incorrect URL scheme")
         else
             self.enabled = false
             self.url = nil
@@ -67,17 +64,16 @@ function BaseLogger:submit (msg)
             body = msg
         else
             headers["Content-Encoding"] = "deflated"
-            body = zlib.deflate()(msg, "finish")
+            zlib.deflateGzip(function (chunksize) return string.sub(msg, 1, 1 + chunksize) end, function (data) body = data end)
         end
         headers["Content-Length"] = #body
 
-        local ok, code = http.request {
-            url = self.url,
+        local res, _ = httpc:request_uri(self.url, {
             method = "POST",
             headers = headers,
-            source = ltn12.source.string(body),
-        }
-        if ok ~= nil and code == 204 then
+            body = body,
+        })
+        if res and res.status == 204 then
             self.submit_successes = self.submit_successes + 1
         else
             self.submit_failures = self.submit_failures + 1
@@ -109,7 +105,13 @@ function BaseLogger:host_lookup ()
     if dyno ~= nil then
         return dyno
     end
-    return dns.gethostname() or "unknown"
+    local hostname_file = io.open("/etc/hostname", "r")
+    local hostname = nil
+    if hostname_file then
+        hostname = hostname_file:read("*line")
+        hostname_file:close()
+    end
+    return hostname or "unknown"
 end
 
 function BaseLogger:version_lookup ()

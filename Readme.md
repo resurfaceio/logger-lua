@@ -22,7 +22,7 @@ Requires Lua 5.3 or higher as well as the following essential packages:
 
 ## Installing With Luarocks
 ```
-luarocks install esurfaceio-logger-1.0-1.rockspec
+luarocks install resurfaceio-logger-1.0-1.rockspec
 ```
 ...
 ## Development

@@ -1,6 +1,6 @@
 rockspec_format = "3.0"
 package = "resurfaceio-logger"
-version = "1.0-1"
+version = "1.1-1"
 source = {
    url = "git+https://github.com/resurfaceio/logger-lua"
 }

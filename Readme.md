@@ -8,8 +8,8 @@ Easily log API requests and responses to your own <a href="https://resurface.io"
 <li><a href="#installing_with_luarocks">Installing With Luarocks</a></li>
 <li><a href="#logging_from_nginx">Logging From NGINX</a></li>
 <li><a href="#logging_with_api">Logging With API</a></li>
-<li><a name="#development"/>Development</a></li>
-<li><a name="#tests"/>Testing Logger</a></li>
+<li><a name="#development">Development</a></li>
+<li><a name="#tests">Testing Logger</a></li>
 <li><a href="#privacy">Protecting User Privacy</a></li>
 </ul>
 

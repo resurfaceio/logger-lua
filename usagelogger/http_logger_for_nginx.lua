@@ -5,7 +5,7 @@ local function reqmod ()
 end
 
 local function settime ()
-    ngx.ctx.starttime = ngx.now * 1000
+    ngx.ctx.starttime = ngx.now() * 1000
 end
 
 local function getdata ()
@@ -34,7 +34,7 @@ end
 local function send ()
     local r = require "resurfaceio-logger"
     local m = require "usagelogger.http_logger_for_nginx_m"
-    local now = ngx.now * 1000
+    local now = ngx.now() * 1000
 
     r.HttpMessage.send{
         logger=m.logger,

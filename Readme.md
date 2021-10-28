@@ -60,7 +60,7 @@ log_by_lua_block {
 }
 ```
 
-For example:
+Example `nginx.conf` file:
 
 ```
 http {

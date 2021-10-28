@@ -25,7 +25,7 @@ Requires Lua 5.1 or higher* as well as the following essential packages:
 ## Installing With Luarocks
 
 ```
-luarocks install resurfaceio-logger-1.1-1.rockspec
+luarocks install resurfaceio-logger
 ```
 
 ## Use with NGINX
@@ -93,7 +93,7 @@ http {
 Install dev requirements.
 
 ```
-luarocks install --only-deps resurfaceio-logger-1.2-3.rockspec
+luarocks install --only-deps resurfaceio-logger
 ```
 
 ### Test Logger

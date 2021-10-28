@@ -34,6 +34,15 @@ luarocks install resurfaceio-logger
 
 <a name="logging_from_nginx"/>
 
+## Environment variables
+
+This logger reads two environment variables when initializing:
+
+#### ✔ All API calls are sent to the database running inside the docker container
+The environment variable `USAGE_LOGGERS_URL` stores this address, which by default should be `http://127.0.0.1:4001/message`
+#### ✔ All API calls are filtered using a set of rules (Optional)
+The environment variable `USAGE_LOGGERS_RULES` stores these rules. [Learn more](#protecting-user-privacy)
+
 ## Logging From NGINX
 You need to modify your `lua_package_path` and `lua_package_cpath` so that openresty looks for packages installed using luarocks.
 

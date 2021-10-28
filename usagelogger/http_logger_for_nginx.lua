@@ -46,5 +46,5 @@ local function send ()
     ngx.ctx.starttime = nil
 end
 
-return {init=reqmod, set=settime, bodyfilter=getdata, log=send}
+return {init=reqmod, access=settime, bodyfilter=getdata, log=send}
 

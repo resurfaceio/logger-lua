@@ -1,6 +1,8 @@
 -- © 2016-2021 Resurface Labs Inc.
 
-local function reqmod ()
+local function reqmod (config)
+    local r = require "resurfaceio-logger"
+    r.config = config
     local m = require "usagelogger.http_logger_for_nginx_m"
 end
 

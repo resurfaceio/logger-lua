@@ -41,6 +41,8 @@ You need to modify your `lua_package_path` and `lua_package_cpath` so that openr
 - Add the following directives to the `http` context:
 
 ```
+env USAGE_LOGGERS_URL;
+env USAGE_LOGGERS_RULES;
 init_by_lua_block {
     local r = require "resurfaceio-logger"
     r.HttpLoggerForNginx.init()
@@ -66,6 +68,8 @@ Example `nginx.conf` file:
 http {
     lua_package_path '/usr/local/share/lua/5.1/?.lua;/usr/local/lib/lua/5.1/?.lua;/home/pepper/.luarocks/share/lua/5.1/?.lua;'
     lua_package_cpath '/usr/local/lib/lua/5.1/?.so;/usr/lib/lua/5.1/?.so;/home/pepper/.luarocks/lib/lua/5.1/?.so;'
+    env USAGE_LOGGERS_URL;
+    env USAGE_LOGGERS_RULES;
     init_by_lua_block {
         local r = require "resurfaceio-logger"
         r.HttpLoggerForNginx.init()

@@ -4,6 +4,10 @@ local function reqmod ()
     local m = require "usagelogger.http_logger_for_nginx_m"
 end
 
+local function settime ()
+    ngx.ctx.starttime = ngx.now * 1000
+end
+
 local function getdata ()
     local r = require "resurfaceio-logger"
     local req = r.HttpRequestImpl:new{}
@@ -30,13 +34,17 @@ end
 local function send ()
     local r = require "resurfaceio-logger"
     local m = require "usagelogger.http_logger_for_nginx_m"
+    local now = ngx.now * 1000
 
     r.HttpMessage.send{
         logger=m.logger,
         request=ngx.ctx.req,
         response=ngx.ctx.res,
+        now=now,
+        interval=(ngx.ctx.starttime and (now - ngx.ctx.starttime))
     }
+    ngx.ctx.starttime = nil
 end
 
-return {init=reqmod, bodyfilter=getdata, log=send}
+return {init=reqmod, set=settime, bodyfilter=getdata, log=send}
 

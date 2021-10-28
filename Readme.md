@@ -100,7 +100,7 @@ http {
 Loggers can be directly integrated into your application using our [API](API.md). This requires the most effort compared with
 the options described above, but also offers the greatest flexibility and control.
 
-[API documentation](API.md)
+--TODO [API documentation](API.md)
 
 <a name="development"/>
 

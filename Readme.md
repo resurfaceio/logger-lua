@@ -43,7 +43,10 @@ You need to modify your `lua_package_path` and `lua_package_cpath` so that openr
 ```
 init_by_lua_block {
     local r = require "resurfaceio-logger"
-    r.HttpLoggerForNginx.init()
+    r.HttpLoggerForNginx.init{
+        url="http://127.0.0.1:7701/message",
+        rules="include debug"
+    }
 }
 lua_need_request_body on;
 access_by_lua_block {
@@ -68,7 +71,10 @@ http {
     lua_package_cpath '/usr/local/lib/lua/5.1/?.so;/usr/lib/lua/5.1/?.so;/home/pepper/.luarocks/lib/lua/5.1/?.so;'
     init_by_lua_block {
         local r = require "resurfaceio-logger"
-        r.HttpLoggerForNginx.init()
+        r.HttpLoggerForNginx.init{
+            url="http://127.0.0.1:7701/message",
+            rules="include debug"
+        }
     }
     lua_need_request_body on;
     access_by_lua_block {

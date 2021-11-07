@@ -40,7 +40,7 @@ You need to modify your `lua_package_path` and `lua_package_cpath` so that openr
 - Install using luarocks.
 - Add the following directives to the `http` context:
 
-```
+```bash
 init_by_lua_block {
     local r = require "resurfaceio-logger"
     r.HttpLoggerForNginx.init{
@@ -53,10 +53,12 @@ access_by_lua_block {
     local r = require "resurfaceio-logger"
     r.HttpLoggerForNginx.access()
 }
+
 body_filter_by_lua_block {
     local r = require "resurfaceio-logger"
     r.HttpLoggerForNginx.bodyfilter()
 }
+
 log_by_lua_block {
     local r = require "resurfaceio-logger"
     r.HttpLoggerForNginx.log()
@@ -65,7 +67,7 @@ log_by_lua_block {
 
 Example `nginx.conf` file:
 
-```
+```bash
 http {
     lua_package_path '/usr/local/share/lua/5.1/?.lua;/usr/local/lib/lua/5.1/?.lua;/home/pepper/.luarocks/share/lua/5.1/?.lua;'
     lua_package_cpath '/usr/local/lib/lua/5.1/?.so;/usr/lib/lua/5.1/?.so;/home/pepper/.luarocks/lib/lua/5.1/?.so;'
@@ -76,15 +78,18 @@ http {
             rules="include debug"
         }
     }
+    
     lua_need_request_body on;
     access_by_lua_block {
         local r = require "resurfaceio-logger"
         r.HttpLoggerForNginx.access()
     }
+    
     body_filter_by_lua_block {
         local r = require "resurfaceio-logger"
         r.HttpLoggerForNginx.bodyfilter()
     }
+    
     log_by_lua_block {
         local r = require "resurfaceio-logger"
         r.HttpLoggerForNginx.log()

@@ -30,10 +30,8 @@ function HttpLogger:submitIfPassing (details, custom_fields)
         return
     end
     if custom_fields ~= nil then
-        for k, v in pairs(custom_fields) do
-            if k not in details then
-                details[k] = v
-            end
+        for k, v in pairs(custom_fields) do   
+            details[k] = v
         end
     end
 

@@ -29,7 +29,8 @@ dependencies = {
    "lua-cjson",
    "lua-zlib",
    "regex",
-   "luasocket"
+   "luasocket",
+   "luaunit"
 }
 build = {
    type = "builtin",

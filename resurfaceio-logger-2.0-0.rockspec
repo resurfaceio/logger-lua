@@ -5,11 +5,11 @@ source = {
    url = "git+https://github.com/resurfaceio/logger-lua"
 }
 description = {
-   summary = "Log API requests and responses with Lua",
+   summary = "Capture API requests and responses with Lua",
    detailed = [[
-      The Resurface.io API Usage Logger module provides a way to log HTTP transactions. 
-      It can log both detailed requests and responses, in order to submit them to a local 
-      instance of Resurface, your very own API system of record.
+      The Resurface.io API Usage Logger module provides a way to capture HTTP transactions. 
+      It can capture both detailed requests and responses, in order to submit them to a local 
+      instance of Resurface, your very own API call data lake.
       
       It features a programming interface to create Logger instances, and to send standard 
       or custom request/response tables to the HTTP endpoint where your own Resurface 
@@ -25,10 +25,11 @@ description = {
    license = "Apache-2.0"
 }
 dependencies = {
-   "lua = 5.1",
-   "lua-cjson=2.1.0-1",
-   "lua-resty-http >= 0.17.0.beta.1-0",
-   "lua-ffi-zlib >= 0.5.0"
+   "lua=5.1",
+   "lua-cjson",
+   "lua-resty-http",
+   "lua-ffi-zlib",
+   "luaunit"
 }
 build = {
    type = "builtin",

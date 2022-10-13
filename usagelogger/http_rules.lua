@@ -1,7 +1,7 @@
 -- © 2016-2021 Resurface Labs Inc.
 
 local HttpRule = require "usagelogger.http_rule"
-local re = require "ngx.re"
+local re = require "usagelogger.utils.re"
 local string = require "usagelogger.utils.str"
 
 local __REGEX_ALLOW_HTTP_URL = [[^\s*allow_http_url\s*(#.*)?$]]
@@ -49,15 +49,15 @@ function HttpRules.set_default_rules (rules)
    HttpRules.__default_rules = re.sub(rules, [[^\s*include default\s*$]], "", "m")
 end
 
-function HttpRules.debug_rules ()
+function HttpRules.debug_rules (m)
    return HttpRules.__DEBUG_RULES
 end
 
-function HttpRules.standard_rules ()
+function HttpRules.standard_rules (m)
    return HttpRules.__STANDARD_RULES
 end
 
-function HttpRules.strict_rules ()
+function HttpRules.strict_rules (m)
    return HttpRules.__STRICT_RULES
 end
 
@@ -75,13 +75,13 @@ function HttpRules.parse_rule (rule)
    m = re.match(rule, __REGEX_COPY_SESSION_FIELD)
    if m then
       return HttpRule:new(
-         nil, "copy_session_field", nil, HttpRules.parse_regex(rule, m[2])
+         nil, "copy_session_field", nil, HttpRules.parse_regex(rule, m[1])
       )
    end
 
    m = re.match(rule, __REGEX_REMOVE)
    if m then
-      return HttpRule:new(nil, "remove", HttpRules.parse_regex(rule, m[2]))
+      return HttpRule:new(nil, "remove", HttpRules.parse_regex(rule, m[1]))
    end
 
    m = re.match(rule, __REGEX_REMOVE_IF)
@@ -89,8 +89,8 @@ function HttpRules.parse_rule (rule)
       return HttpRule:new(
          nil,
          "remove_if",
-         HttpRules.parse_regex(rule, m[2]),
-         HttpRules.parse_regex(rule, m[3])
+         HttpRules.parse_regex(rule, m[1]),
+         HttpRules.parse_regex(rule, m[2])
       )
    end
 
@@ -99,8 +99,8 @@ function HttpRules.parse_rule (rule)
       return HttpRule:new(
          nil,
          "remove_if_found",
-         HttpRules.parse_regex(rule, m[2]),
-         HttpRules.parse_regex_find(rule, m[3])
+         HttpRules.parse_regex(rule, m[1]),
+         HttpRules.parse_regex_find(rule, m[2])
       )
    end
 
@@ -109,8 +109,8 @@ function HttpRules.parse_rule (rule)
       return HttpRule:new(
          nil,
          "remove_unless",
-         HttpRules.parse_regex(rule, m[2]),
-         HttpRules.parse_regex(rule, m[3])
+         HttpRules.parse_regex(rule, m[1]),
+         HttpRules.parse_regex(rule, m[2])
       )
    end
 
@@ -119,8 +119,8 @@ function HttpRules.parse_rule (rule)
       return HttpRule:new(
          nil,
          "remove_unless_found",
-         HttpRules.parse_regex(rule, m[2]),
-         HttpRules.parse_regex_find(rule, m[3])
+         HttpRules.parse_regex(rule, m[1]),
+         HttpRules.parse_regex_find(rule, m[2])
       )
    end
 
@@ -129,16 +129,16 @@ function HttpRules.parse_rule (rule)
       return HttpRule:new(
          nil,
          "replace",
-         HttpRules.parse_regex(rule, m[2]),
-         HttpRules.parse_regex_find(rule, m[3]),
-         HttpRules.parse_string(rule, m[4])
+         HttpRules.parse_regex(rule, m[1]),
+         HttpRules.parse_regex_find(rule, m[2]),
+         HttpRules.parse_string(rule, m[3])
       )
    end
 
    m = re.match(rule, __REGEX_SAMPLE)
    if m then
-      local msg = "Invalid sample percent: " .. m[2]
-      local m1 = assert(m[2] + 0, msg)
+      local msg = "Invalid sample percent: " .. m[1]
+      local m1 = assert(m[1] + 0, msg)
       assert(m1 >= 1 and m1 <= 99, msg)
       return HttpRule:new(nil, "sample", nil, m1)
    end
@@ -155,7 +155,7 @@ function HttpRules.parse_rule (rule)
 
    m = re.match(rule, __REGEX_STOP)
    if m then
-      return HttpRule:new(nil, "stop", HttpRules.parse_regex(rule, m[2]))
+      return HttpRule:new(nil, "stop", HttpRules.parse_regex(rule, m[1]))
    end
 
    m = re.match(rule, __REGEX_STOP_IF)
@@ -163,8 +163,8 @@ function HttpRules.parse_rule (rule)
       return HttpRule:new(
          nil,
          "stop_if",
-         HttpRules.parse_regex(rule, m[2]),
-         HttpRules.parse_regex(rule, m[3])
+         HttpRules.parse_regex(rule, m[1]),
+         HttpRules.parse_regex(rule, m[2])
       )
    end
 
@@ -173,8 +173,8 @@ function HttpRules.parse_rule (rule)
       return HttpRule:new(
          nil,
          "stop_if_found",
-         HttpRules.parse_regex(rule, m[2]),
-         HttpRules.parse_regex_find(rule, m[3])
+         HttpRules.parse_regex(rule, m[1]),
+         HttpRules.parse_regex_find(rule, m[2])
       )
    end
 
@@ -183,8 +183,8 @@ function HttpRules.parse_rule (rule)
       return HttpRule:new(
          nil,
          "stop_unless",
-         HttpRules.parse_regex(rule, m[2]),
-         HttpRules.parse_regex(rule, m[3])
+         HttpRules.parse_regex(rule, m[1]),
+         HttpRules.parse_regex(rule, m[2])
       )
    end
 
@@ -193,8 +193,8 @@ function HttpRules.parse_rule (rule)
       return HttpRule:new(
          nil,
          "stop_unless_found",
-         HttpRules.parse_regex(rule, m[2]),
-         HttpRules.parse_regex_find(rule, m[3])
+         HttpRules.parse_regex(rule, m[1]),
+         HttpRules.parse_regex_find(rule, m[2])
       )
    end
 
@@ -210,16 +210,16 @@ function HttpRules.parse_regex (rule, regex)
    if not string.ends(s, "$") then
       s = s .. "$"
    end
-   local _, err = re.match(s, "")
-   assert(err ~= nil, string.format("Invalid regex (%s) in rule: %s", regex, rule))
+   local _, err = re.match("", s)
+   assert(err == nil, string.format("Invalid regex (%s) in rule: %s", regex, rule))
    return s
 end
 
 -- Parses regex for finding.
 function HttpRules.parse_regex_find (rule, regex)
    local s = HttpRules.parse_string(rule, regex)
-   local _, err = re.match(s, "")
-   assert(err ~= nil, string.format("Invalid regex (%s) in rule: %s", regex, rule))
+   local _, err = re.match("", s)
+   assert(err == nil, string.format("Invalid regex (%s) in rule: %s", regex, rule))
    return s
 end
 
@@ -231,7 +231,7 @@ function HttpRules.parse_string (rule, expr)
       if m then
          local m1 = m[1]
          local m1p = string.format([[^[%s].*|.*[^\\\\][%s].*]], sep, sep)
-         if re.match(m1, m) then
+         if re.match(m1, m1p) then
             error(string.format("Unescaped separator (%s) in rule: %s", sep, rule))
          end
          return string.join(string.split(m1, "([^" .. "\\" .. sep .. "]+)"), sep)
@@ -260,15 +260,15 @@ function HttpRules:new (o, rules)
    end
 
    -- force default rules if necessary
-   rules = re.sub(rules, [[^\s*include default\s*$]], HttpRules.default_rules(), "m")
+   rules = re.sub(rules, [[^\s*include default\s*$]], HttpRules.default_rules, "m")
    if #string.gsub(rules, "%s", "") == 0 then
       rules = HttpRules.default_rules()
    end
 
    -- expand rule includes
-   rules = re.sub(rules, [[^\s*include debug\s*$]], HttpRules.debug_rules(), "m")
-   rules = re.sub(rules, [[^\s*include standard\s*$]], HttpRules.standard_rules(), "m")
-   rules = re.sub(rules, [[^\s*include strict\s*$]], HttpRules.strict_rules(), "m")
+   rules = re.sub(rules, [[^\s*include debug\s*$]], HttpRules.debug_rules, "m")
+   rules = re.sub(rules, [[^\s*include standard\s*$]], HttpRules.standard_rules, "m")
+   rules = re.sub(rules, [[^\s*include strict\s*$]], HttpRules.strict_rules, "m")
    o._text = rules
 
    -- parse all rules

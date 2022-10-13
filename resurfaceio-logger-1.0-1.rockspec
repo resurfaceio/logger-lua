@@ -1,6 +1,6 @@
 rockspec_format = "3.0"
 package = "resurfaceio-logger"
-version = "1.0-1"
+version = "2.0-0"
 source = {
    url = "git+https://github.com/resurfaceio/logger-lua"
 }
@@ -25,11 +25,10 @@ description = {
    license = "Apache-2.0"
 }
 dependencies = {
-   "lua >= 5.3, < 5.4.2",
+   "lua = 5.1",
    "lua-cjson=2.1.0-1",
-   "lua-zlib",
-   "regex",
-   "luasocket"
+   "lua-resty-http >= 0.17.0.beta.1-0",
+   "lua-ffi-zlib >= 0.5.0"
 }
 build = {
    type = "builtin",
@@ -45,6 +44,7 @@ build = {
       ["usagelogger.usage_loggers"] = "usagelogger/usage_loggers.lua",
       ["usagelogger.utils.re"] = "usagelogger/utils/re.lua",
       ["usagelogger.utils.str"] = "usagelogger/utils/str.lua",
+      ["usagelogger.utils.zlib"] = "usagelogger/utils/zlib.lua",
    },
    copy_directories = {"tests"}
 }

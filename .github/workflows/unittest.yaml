@@ -18,6 +18,8 @@ jobs:
         with:
           openrestyVersion: "1.19.9.1"
       - uses: leafo/gh-actions-luarocks@v4.0.0
+        with:
+          withLuaPath: "/usr/local/openresty/luajit/"
 
       - name: Install dependencies
         run: |

@@ -5,7 +5,7 @@ local http = require "resty.http"
 
 local r = require "resurfaceio-logger"
 
-local BASE_URL = "http://" .. os.getenv("TEST_RESURFACE_HOST") or "localhost" .. ":7701"
+local BASE_URL = "http://" .. (os.getenv("TEST_RESURFACE_HOST") or "localhost") .. ":7701"
 local PARSED_BASE_URL = http:parse_uri(BASE_URL)
 
 local req = r.HttpRequestImpl:new{method="GET", url="http://www.example.com/", headers={foo="bar",ok=false,n=25}}

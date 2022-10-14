@@ -132,7 +132,7 @@ luarocks install --only-deps resurfaceio-logger
   docker build -t loggerlua:test . && docker run -it --rm loggerlua:test
   ```
   
-  Two tests are skipped if you don't have Resurface up and running. If you would like to run those tests as well, and you have docker compose, you can do:
+  Two tests are skipped if you don't have Resurface up and running. If you would like to run those tests as well, and you have `docker-compose`, you can do:
   ```bash
   docker build -t loggerlua:test . &&  docker-compose up
   ```

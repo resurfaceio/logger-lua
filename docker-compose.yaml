@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  openresty:
+    image: loggerlua:test
+    container_name: openresty-test
+    depends_on:
+      - resurface
+    environment:
+      - TEST_RESURFACE_HOST=resurface
+  
+  resurface:
+    image: resurfaceio/resurface:3.2.6
+    container_name: resurface-test
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 8g
+    ports:
+      - '7700:7700'
+      - '7701:7701'

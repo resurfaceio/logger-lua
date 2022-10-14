@@ -7,6 +7,13 @@ local HttpRequestImpl = require('usagelogger.http_request_impl')
 local HttpResponseImpl = require('usagelogger.http_response_impl')
 
 
+local MOCK_NGX = {
+    socket = {tcp = {}},
+    req = {socket={},get_headers={},get_method={}},
+    config = {ngx_lua_version=""},
+    re = require "usagelogger.utils.re"
+}
+
 local DEMO_URL = "https://demo.resurface.io"
 local MOCK_AGENT = "helper.py"
 local MOCK_HTML = "<html>Hello World!</html>"
@@ -158,7 +165,8 @@ local helpers = {
     mock_response_with_html = mock_response_with_html,
     parseable = parseable,
     test_good_json = test_good_json,
-    test_invalid_json = test_invalid_json
+    test_invalid_json = test_invalid_json,
+    ngx = MOCK_NGX
 }
 
 

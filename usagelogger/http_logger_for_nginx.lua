@@ -1,4 +1,4 @@
--- © 2016-2021 Resurface Labs Inc.
+-- © 2016-2022 Resurface Labs Inc.
 
 local function reqmod (config)
     local r = require "resurfaceio-logger"
@@ -33,20 +33,24 @@ local function getdata ()
 
 end
 
-local function send ()
+local function sendfromtimer (_, req, res, starttime, endtime)
     local r = require "resurfaceio-logger"
     local m = require "usagelogger.http_logger_for_nginx_m"
-    local now = ngx.now() * 1000
+    local now = endtime * 1000
 
     r.HttpMessage.send{
         logger=m.logger,
-        request=ngx.ctx.req,
-        response=ngx.ctx.res,
+        request=req,
+        response=res,
         now=now,
-        interval=(ngx.ctx.starttime and (now - ngx.ctx.starttime))
+        interval=(starttime and (now - starttime))
     }
-    ngx.ctx.starttime = nil
 end
 
-return {init=reqmod, access=settime, bodyfilter=getdata, log=send}
+local function send ()
+  ngx.timer.at(0, sendfromtimer, ngx.ctx.req, ngx.ctx.res, ngx.ctx.starttime, ngx.now())
+  ngx.ctx.starttime = nil
+end
 
+
+return {init=reqmod, access=settime, bodyfilter=getdata, log=send}

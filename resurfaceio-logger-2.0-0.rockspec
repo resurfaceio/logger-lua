@@ -1,15 +1,15 @@
 rockspec_format = "3.0"
 package = "resurfaceio-logger"
-version = "1.2-3"
+version = "2.0-0"
 source = {
    url = "git+https://github.com/resurfaceio/logger-lua"
 }
 description = {
-   summary = "Log API requests and responses with Lua",
+   summary = "Capture API requests and responses with Lua",
    detailed = [[
-      The Resurface.io API Usage Logger module provides a way to log HTTP transactions. 
-      It can log both detailed requests and responses, in order to submit them to a local 
-      instance of Resurface, your very own API system of record.
+      The Resurface.io API Usage Logger module provides a way to capture HTTP transactions. 
+      It can capture both detailed requests and responses, in order to submit them to a local 
+      instance of Resurface, your very own API call data lake.
       
       It features a programming interface to create Logger instances, and to send standard 
       or custom request/response tables to the HTTP endpoint where your own Resurface 
@@ -25,11 +25,10 @@ description = {
    license = "Apache-2.0"
 }
 dependencies = {
-   "lua >= 5.1, < 5.4.2",
+   "lua=5.1",
    "lua-cjson",
-   "lua-zlib",
-   "regex",
-   "luasocket",
+   "lua-resty-http",
+   "lua-ffi-zlib",
    "luaunit"
 }
 build = {
@@ -46,8 +45,7 @@ build = {
       ["usagelogger.usage_loggers"] = "usagelogger/usage_loggers.lua",
       ["usagelogger.utils.re"] = "usagelogger/utils/re.lua",
       ["usagelogger.utils.str"] = "usagelogger/utils/str.lua",
-      ["usagelogger.http_logger_for_nginx"] = "usagelogger/http_logger_for_nginx.lua",
-      ["usagelogger.http_logger_for_nginx_m"] = "usagelogger/http_logger_for_nginx_m.lua",
+      ["usagelogger.utils.zlib"] = "usagelogger/utils/zlib.lua",
    },
    copy_directories = {"tests"}
 }

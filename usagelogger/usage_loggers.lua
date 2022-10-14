@@ -1,9 +1,9 @@
--- © 2016-2021 Resurface Labs Inc.
+-- © 2016-2022 Resurface Labs Inc.
 
 UsageLoggers = {}
 
 -- VERSION
-UsageLoggers._VERSION = "1.2-3"
+UsageLoggers._VERSION = "2.0-0"
 
 UsageLoggers.__BRICKED = os.getenv("USAGE_LOGGERS_DISABLE") == 'true'
 UsageLoggers.__disabled = UsageLoggers.__BRICKED

@@ -24,10 +24,15 @@ function HttpLogger:new (o, enabled, queue, url, skip_compression, skip_submissi
     return o
 end
 
-function HttpLogger:submitIfPassing (details)
+function HttpLogger:submitIfPassing (details, custom_fields)
     details = self.rules:apply(details)
     if details == nil then
         return
+    end
+    if custom_fields ~= nil then
+        for k, v in pairs(custom_fields) do   
+            details[k] = v
+        end
     end
 
     table.insert(details, {"host", self.host})

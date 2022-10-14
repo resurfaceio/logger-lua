@@ -5,7 +5,7 @@ local HttpResponseImpl = require('usagelogger.http_response_impl')
 
 local HttpMessage = {}
 
-function HttpMessage.send (o, logger, request, response, response_body, request_body, now, interval)
+function HttpMessage.send (o, logger, request, response, response_body, request_body, now, interval, custom_fields)
     o = o or {}
     logger = assert(logger or o.logger, "logger required")
     request = assert(request or o.request, "request required")
@@ -14,6 +14,7 @@ function HttpMessage.send (o, logger, request, response, response_body, request_
     request_body = request_body or o.request_body
     now = now or o.now
     interval = interval or o.interval
+    custom_fields = custom_fields or o.custom_fields
 
     if not logger.enabled then
         return
@@ -30,7 +31,7 @@ function HttpMessage.send (o, logger, request, response, response_body, request_
         table.insert(message, {"interval", interval})
     end
 
-    logger:submitIfPassing(message)
+    logger:submitIfPassing(message, custom_fields)
 
 end
 

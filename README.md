@@ -1,5 +1,5 @@
 # resurfaceio-logger-lua
-Easily log API requests and responses to your own <a href="https://resurface.io">system of record</a>.
+Easily capture API requests and responses to your own <a href="https://resurface.io">API call data lake</a>.
 
 ## Contents
 
@@ -16,13 +16,11 @@ Easily log API requests and responses to your own <a href="https://resurface.io"
 <a name="dependencies"/>
 
 ## Dependencies
-Requires Lua 5.1 or higher* as well as the following essential packages:
+Requires Lua 5.1/LuaJIT as well as the following essential packages:
+- [ngx](https://github.com/openresty/lua-nginx-module#introduction)
 - [lua-cjson](https://www.kyne.com.au/~mark/software/lua-cjson.php)
-- [lua-zlib](https://github.com/brimworks/lua-zlib)
-- [regex](https://github.com/mah0x211/lua-regex)
-- [luasocket](https://github.com/diegonehab/luasocket)
-
-\*Integration with OpenResty currently works with Lua 5.1 only
+- [lua-ffi-zlib](https://github.com/hamishforbes/lua-ffi-zlib)
+- [lua-resty-http](https://github.com/ledgetech/lua-resty-http)
 
 <a name="installing_with_luarocks"/>
 
@@ -35,7 +33,7 @@ luarocks install resurfaceio-logger
 <a name="logging_from_nginx"/>
 
 ## Logging From NGINX
-You need to modify your `lua_package_path` and `lua_package_cpath` so that openresty looks for packages installed using luarocks.
+You might need to modify your `lua_package_path` and `lua_package_cpath` so that OpenResty looks for packages installed using luarocks.
 
 - Install using luarocks.
 - Add the following directives to the `http` context:
@@ -118,18 +116,28 @@ the options described above, but also offers the greatest flexibility and contro
 ## Development
 Install dev requirements.
 
-```
+```bash
 luarocks install --only-deps resurfaceio-logger
 ```
 
 <a name="tests"/>
 
 ### Testing Logger
-
+```bash
+resty test/test.lua
 ```
-luarocks test -v
+If you don't have OpenResty installed but you have docker, you can do:
+```bash
+docker build -t loggerlua:test . && docker run -it --rm loggerlua:test
 ```
-
+Two tests are skipped if you don't have Resurface up and running. If you would like to run those tests as well, and you have docker compose, you can do:
+```bash
+docker-compose up
+```
+Wait for the tests to complete, and then
+```bash
+docker-compose down --remove-orphans --volumes
+```
 <a name="privacy"/>
 
 ## Protecting User Privacy
@@ -141,4 +149,4 @@ but logging rules are easily customized to meet the needs of any application.
 <a href="https://resurface.io/rules.html">Logging rules documentation</a>
 
 ---
-<small>&copy; 2016-2021 <a href="https://resurface.io">Resurface Labs Inc.</a></small>
+<small>&copy; 2016-2022 <a href="https://resurface.io">Resurface Labs Inc.</a></small>

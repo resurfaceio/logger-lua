@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   openresty:
-    image: loggerlua-resty
+    image: loggerlua:test
     container_name: openresty-test
     depends_on:
       - resurface

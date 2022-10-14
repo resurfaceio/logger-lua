@@ -46,6 +46,8 @@ build = {
       ["usagelogger.utils.re"] = "usagelogger/utils/re.lua",
       ["usagelogger.utils.str"] = "usagelogger/utils/str.lua",
       ["usagelogger.utils.zlib"] = "usagelogger/utils/zlib.lua",
+      ["usagelogger.http_logger_for_nginx"] = "usagelogger/http_logger_for_nginx.lua",
+      ["usagelogger.http_logger_for_nginx_m"] = "usagelogger/http_logger_for_nginx_m.lua",
    },
    copy_directories = {"tests"}
 }

@@ -123,21 +123,23 @@ luarocks install --only-deps resurfaceio-logger
 <a name="tests"/>
 
 ### Testing Logger
-```bash
-resty test/test.lua
-```
-If you don't have OpenResty installed but you have docker, you can do:
-```bash
-docker build -t loggerlua:test . && docker run -it --rm loggerlua:test
-```
-Two tests are skipped if you don't have Resurface up and running. If you would like to run those tests as well, and you have docker compose, you can do:
-```bash
-docker-compose up
-```
-Wait for the tests to complete, and then
-```bash
-docker-compose down --remove-orphans --volumes
-```
+- If you are running OpenResty, you can do
+  ```bash
+  resty test/test.lua
+  ```
+- If you don't have OpenResty installed but you do have `docker`, you can do:
+  ```bash
+  docker build -t loggerlua:test . && docker run -it --rm loggerlua:test
+  ```
+  
+  Two tests are skipped if you don't have Resurface up and running. If you would like to run those tests as well, and you have docker compose, you can do:
+  ```bash
+  docker build -t loggerlua:test . &&  docker-compose up
+  ```
+  Wait for the tests to complete, and then
+  ```bash
+  docker-compose down --remove-orphans --volumes && docker rmi loggerlua:test
+  ```
 <a name="privacy"/>
 
 ## Protecting User Privacy

@@ -1,3 +1,5 @@
+-- © 2016-2022 Resurface Labs Inc.
+
 local r = require "resurfaceio-logger"
 
 local DEFAULT_CONFIG = {

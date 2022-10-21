@@ -37,6 +37,8 @@ if isregex and re then
         end
         return x
     end
+
+    re.find = re.indexof
 end
 
 return re

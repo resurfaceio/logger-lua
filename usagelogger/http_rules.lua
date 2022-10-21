@@ -403,8 +403,8 @@ function HttpRules:apply (details)
    -- stop rules come first
    for _, r in pairs(self._stop) do
       for _, d in pairs(details) do
-          local scope = r.scope()
-          if scope.match(d[1]) then
+          local scope = r:scope()
+          if re.match(d[1], scope) then
               return nil
           end
       end
@@ -412,8 +412,8 @@ function HttpRules:apply (details)
 
    for _, r in pairs(self._stop_if_found) do
       for _, d in pairs(details) do
-          local scope = r.scope()
-          if scope.match(d[1]) and r.param1.search(d[2]) then
+          local scope = r:scope()
+          if re.match(d[1], scope) and re.find(d[2], r:param1()) ~= nil then
               return nil
           end
       end
@@ -421,8 +421,8 @@ function HttpRules:apply (details)
 
    for _, r in pairs(self._stop_if) do
       for _, d in pairs(details) do
-          local scope = r.scope()
-          if scope.match(d[1]) and r.param1.match(d[2]) then
+          local scope = r:scope()
+          if re.match(d[1], scope) and re.match(d[2], r:param1()) then
               return nil
           end
       end
@@ -431,8 +431,8 @@ function HttpRules:apply (details)
    local passed = 0
    for _, r in pairs(self._stop_unless_found) do
       for _, d in pairs(details) do
-          local scope = r.scope()
-          if scope.match(d[1]) and r.param1.search(d[2]) then
+          local scope = r:scope()
+          if re.match(d[1], scope) and re.find(d[2], r:param1()) ~= nil then
               passed = passed + 1
           end
       end
@@ -445,8 +445,8 @@ function HttpRules:apply (details)
    passed = 0
    for _, r in pairs(self._stop_unless) do
       for _, d in pairs(details) do
-          local scope = r.scope()
-          if scope.match(d[1]) and r.param1.match(d[2]) then
+          local scope = r:scope()
+          if re.match(d[1], scope) and re.match(d[2], r:param1()) then
               passed = passed + 1
           end
       end
@@ -464,8 +464,8 @@ function HttpRules:apply (details)
    -- winnow sensitive details based on remove rules if configured
    for _, r in pairs(self._remove) do
       for _, d in pairs(details) do
-          local scope = r.scope()
-          if scope.match(d[1]) then
+          local scope = r:scope()
+          if re.match(d[1], scope) then
               d[2] = ""
           end
       end
@@ -473,8 +473,8 @@ function HttpRules:apply (details)
 
    for _, r in pairs(self._remove_unless_found) do
       for _, d in pairs(details) do
-          local scope = r.scope()
-          if scope.match(d[1]) and not r.param1.search(d[2]) then
+          local scope = r:scope()
+          if re.match(d[1], scope) and not re.find(d[2], r:param1()) ~= nil then
               d[2] = ""
           end
       end
@@ -482,8 +482,8 @@ function HttpRules:apply (details)
 
    for _, r in pairs(self._remove_if_found) do
       for _, d in pairs(details) do
-          local scope = r.scope()
-          if scope.match(d[1]) and r.param1.search(d[2]) then
+          local scope = r:scope()
+          if re.match(d[1], scope) and re.find(d[2], r:param1()) ~= nil then
               d[2] = ""
           end
       end
@@ -491,8 +491,8 @@ function HttpRules:apply (details)
 
    for _, r in pairs(self._remove_unless) do
       for _, d in pairs(details) do
-          local scope = r.scope()
-          if scope.match(d[1]) and not r.param1.match(d[2]) then
+          local scope = r:scope()
+          if re.match(d[1], scope) and not re.match(d[2], r:param1()) then
               d[2] = ""
           end
       end
@@ -500,8 +500,8 @@ function HttpRules:apply (details)
 
    for _, r in pairs(self._remove_if) do
       for _, d in pairs(details) do
-          local scope = r.scope()
-          if scope.match(d[1]) and r.param1.match(d[2]) then
+          local scope = r:scope()
+          if re.match(d[1], scope) and re.match(d[2], r:param1()) then
               d[2] = ""
           end
       end
@@ -526,9 +526,9 @@ function HttpRules:apply (details)
    -- mask sensitive details based on replace rules if configured
    for _, r in pairs(self._replace) do
       for _, d in pairs(details) do
-          local scope = r.scope()
-          if scope.match(d[1]) then
-              d[2] = re.sub(r.param1, r.param2, d[2])
+          local scope = r:scope()
+          if re.match(d[1], scope) then
+              d[2] = re.sub(r.param1, r:param2(), d[2])
           end
       end
    end

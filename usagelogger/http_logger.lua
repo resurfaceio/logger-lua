@@ -30,8 +30,8 @@ function HttpLogger:submitIfPassing (details, custom_fields)
         return
     end
     if custom_fields ~= nil then
-        for k, v in pairs(custom_fields) do   
-            details[k] = v
+        for k, v in pairs(custom_fields) do
+            table.insert(details, {"custom_field:" .. k, v})
         end
     end
 

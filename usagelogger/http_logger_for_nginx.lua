@@ -1,5 +1,7 @@
 -- © 2016-2022 Resurface Labs Inc.
 
+local str = require "usagelogger.utils.str"
+
 local function reqmod (config)
     local r = require "resurfaceio-logger"
     r.config = config
@@ -16,10 +18,13 @@ local function getdata ()
     local res = r.HttpResponseImpl:new{}
 
     req.method = ngx.req.get_method()
-    req.url = ngx.var.scheme .. "://" .. ngx.var.http_host .. ngx.var.request_uri
-    local qs = ngx.var.query_string
+    local path, qs = unpack(str.split(ngx.var.request_uri, "([^?]+)"))
+    req.url = ngx.var.scheme .. "://" .. ngx.var.http_host .. path
+    qs = ngx.var.query_string or qs
     if qs ~= nil then
-      req.url = req.url .. "?" .. qs
+      for param, value in pairs(qs) do
+        req.params[param] = value
+      end
     end
     req.headers = ngx.req.get_headers()
     req.body = ngx.req.get_body_data() or ""

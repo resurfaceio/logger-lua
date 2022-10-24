@@ -8,6 +8,28 @@ local function reqmod (config)
     local m = require "usagelogger.http_logger_for_nginx_m"
 end
 
+-- unescape function from Programming in Lua: https://www.lua.org/pil/20.3.html
+function unescape (s)
+  s = str.gsub(s, "+", " ")
+  s = str.gsub(s, "%%(%x%x)", function (h)
+        return str.char(tonumber(h, 16))
+      end)
+  return s
+end
+
+local function get_params (querystr)
+    local params = {}
+    for key, val in str.gmatch(querystr, "([^&=]+)=([^&=]+)") do
+      key = unescape(key)
+      val = unescape(val)
+      if params[key] then
+        params[key] = params[key] .. "," .. val
+      end
+      params[key] = val
+    end
+    return params
+end
+
 local function settime ()
     ngx.ctx.starttime = ngx.now() * 1000
 end
@@ -22,7 +44,8 @@ local function getdata ()
     req.url = ngx.var.scheme .. "://" .. ngx.var.http_host .. path
     qs = ngx.var.query_string or qs
     if qs ~= nil then
-      for param, value in pairs(qs) do
+      req.params = {}
+      for param, value in pairs(get_params(qs)) do
         req.params[param] = value
       end
     end

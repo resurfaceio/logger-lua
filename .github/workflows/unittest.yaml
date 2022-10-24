@@ -24,7 +24,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          luarocks install --only-deps resurfaceio-logger-2.0-0.rockspec
+          luarocks install --only-deps resurfaceio-logger-2.1.1-1.rockspec
       - name: Run test
         run: |
           resty tests/test.lua

@@ -3,7 +3,7 @@
 UsageLoggers = {}
 
 -- VERSION
-UsageLoggers._VERSION = "2.0-0"
+UsageLoggers._VERSION = "2.1.0-1"
 
 UsageLoggers.__BRICKED = os.getenv("USAGE_LOGGERS_DISABLE") == 'true'
 UsageLoggers.__disabled = UsageLoggers.__BRICKED

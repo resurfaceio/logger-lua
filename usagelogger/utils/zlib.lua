@@ -1,4 +1,4 @@
--- © 2016-2022 Resurface Labs Inc.
+-- © 2016-2023 Resurface Labs Inc.
 
 local isffizlib, err1 = pcall(require, "ffi-zlib")
 local isluazlib, err2 = pcall(require, "zlib")

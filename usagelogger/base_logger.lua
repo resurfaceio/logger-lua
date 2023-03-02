@@ -1,4 +1,4 @@
--- © 2016-2021 Resurface Labs Inc.
+-- © 2016-2023 Resurface Labs Inc.
 
 local http = require "resty.http"
 local zlib = require "usagelogger.utils.zlib"

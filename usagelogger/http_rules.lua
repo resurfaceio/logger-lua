@@ -1,4 +1,4 @@
--- © 2016-2022 Resurface Labs Inc.
+-- © 2016-2023 Resurface Labs Inc.
 
 local HttpRule = require "usagelogger.http_rule"
 local re = require "usagelogger.utils.re"

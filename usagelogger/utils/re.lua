@@ -1,4 +1,4 @@
--- © 2016-2022 Resurface Labs Inc.
+-- © 2016-2023 Resurface Labs Inc.
 
 local isngx, err1 = pcall(require, "ngx")
 local isregex, err2 = pcall(require, "regex")

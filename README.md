@@ -1,5 +1,8 @@
 # resurfaceio-logger-lua
-Easily capture API requests and responses to your own <a href="https://resurface.io">API call data lake</a>.
+Easily log API requests and responses to your own <a href="https://resurface.io">security data lake</a>.
+
+[![License](https://img.shields.io/github/license/resurfaceio/logger-lua)](https://github.com/resurfaceio/logger-lua/blob/master/LICENSE)
+[![Contributing](https://img.shields.io/badge/contributions-welcome-green.svg)](https://github.com/resurfaceio/logger-lua/blob/master/CONTRIBUTING.md)
 
 ## Contents
 

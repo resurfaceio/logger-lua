@@ -1,4 +1,4 @@
--- © 2016-2023 Resurface Labs Inc.
+-- © 2016-2023 Graylog, Inc.
 local luaunit = require('luaunit')
 
 ngx = pcall(require, "ngx") and require "ngx" or require("tests.test_helper").ngx

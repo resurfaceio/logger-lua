@@ -1,4 +1,4 @@
--- © 2016-2023 Resurface Labs Inc.
+-- © 2016-2023 Graylog, Inc.
 
 local HttpRequestImpl = require('usagelogger.http_request_impl')
 local HttpResponseImpl = require('usagelogger.http_response_impl')

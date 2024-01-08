@@ -1,4 +1,4 @@
--- © 2016-2023 Graylog, Inc.
+-- © 2016-2024 Graylog, Inc.
 
 local isngx, err1 = pcall(require, "ngx")
 local isregex, err2 = pcall(require, "regex")

@@ -1,4 +1,4 @@
--- © 2016-2023 Graylog, Inc.
+-- © 2016-2024 Graylog, Inc.
 
 local HttpRule = require "usagelogger.http_rule"
 local re = require "usagelogger.utils.re"

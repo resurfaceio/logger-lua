@@ -1,4 +1,4 @@
--- © 2016-2023 Graylog, Inc.
+-- © 2016-2024 Graylog, Inc.
 
 local isffizlib, err1 = pcall(require, "ffi-zlib")
 local isluazlib, err2 = pcall(require, "zlib")
